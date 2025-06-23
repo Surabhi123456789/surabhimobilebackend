@@ -1,7 +1,12 @@
+import cors from 'cors';
+
+
 const app = require("./app");
 const dotenv = require("dotenv");
 const cloudinary = require("cloudinary");
 const connectDatabase = require("./config/database")
+
+app.use(cors());
 
 process.on("uncaughtException",(err)=>{
     console.log(`Error: ${err.message}`);
