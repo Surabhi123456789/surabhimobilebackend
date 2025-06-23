@@ -2,8 +2,8 @@ const Razorpay = require("razorpay");
 const catchAsyncErrors = require("../middleware/catchAsyncErrors");
 const crypto = require('crypto');
 const razorpay = new Razorpay({
-    key_id: process.env.RZR_KEY_ID,
-    key_secret: process.env.RZR_KEY_SECRET,
+    key_id: process.env.RZR_key_id,
+    key_secret: process.env.RZR_key_secret,
 });
 
 exports.processPayment = catchAsyncErrors(async(req, res, next) => {
@@ -18,7 +18,7 @@ exports.processPayment = catchAsyncErrors(async(req, res, next) => {
     res.status(200).json({
         success: true,
         order,
-        razorpayApiKey: process.env.RZR_KEY_ID
+        razorpayApiKey: process.env.RZR_key_id
     });
 });
 
@@ -32,14 +32,14 @@ exports.verifyRazorpayPayment = catchAsyncErrors(async (req, res, next) => {
     } = req.body;
 
     const razorpay = new Razorpay({
-        key_id: process.env.RZR_KEY_ID,
-        key_secret: process.env.RZR_KEY_SECRET,
+        key_id: process.env.RZR_key_id,
+        key_secret: process.env.RZR_key_secret,
     });
 
     try {
         // Verify signature
         const generated_signature = crypto
-            .createHmac('sha256', process.env.RZR_KEY_SECRET)
+            .createHmac('sha256', process.env.RZR_key_secret)
             .update(razorpay_order_id + '|' + razorpay_payment_id)
             .digest('hex');
 
@@ -74,6 +74,6 @@ exports.verifyRazorpayPayment = catchAsyncErrors(async (req, res, next) => {
 exports.sendRazorApiKey = catchAsyncErrors(async(req, res, next) => {
     res.status(200).json({
         success: true,
-        rzrApiKey: process.env.RZR_KEY_ID,
+        rzrApiKey: process.env.RZR_key_id,
     });
 });
