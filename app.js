@@ -12,11 +12,23 @@ const dotenv = require("dotenv");
 
 dotenv.config({path:"backend/config/config.env"});
 
+// const corsOptions = {
+//   origin: "https://surabhimobilefrontend.vercel.app", // allow your frontend domain
+//   methods: ["GET", "POST", "PUT", "DELETE"],  
+//    allowedHeaders: ["Content-Type", "Authorization"],         // allow desired HTTP methods
+//   credentials: true                                    // allow cookies if used
+// };
+// CORS configuration
 const corsOptions = {
-  origin: "https://surabhimobilefrontend.vercel.app", // allow your frontend domain
-  methods: ["GET", "POST", "PUT", "DELETE"],  
-   allowedHeaders: ["Content-Type", "Authorization"],         // allow desired HTTP methods
-  credentials: true                                    // allow cookies if used
+  origin: [
+    'https://surabhimobilefrontend.vercel.app', // Local development
+    'https://your-frontend-domain.com', // Your production frontend URL
+    // Add your actual frontend domain here
+  ],
+  credentials: true, // This is CRUCIAL - allows cookies to be sent
+  optionsSuccessStatus: 200,
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Authorization'],
 };
 
 app.use(cors(corsOptions));

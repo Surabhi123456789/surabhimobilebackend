@@ -247,7 +247,7 @@ exports.getSingleUser = catchAsyncErrors(async(req,res,next)=>{
 
     if (!user) {
       return next(
-        new ErrorHander(`User does not exist with Id: ${req.params.id}`)
+        new ErrorHandler(`User does not exist with Id: ${req.params.id}`)
       );
     }
   
@@ -270,7 +270,7 @@ exports.updateUserRole = catchAsyncErrors(async(req,res,next)=>{
     const user = await User.findByIdAndUpdate(req.params.id, newUserData,{
         new: true,
         runValidators: true,
-        userFindAndModify: false,
+        useFindAndModify: false,
     } );
 
     res.status(200).json({
@@ -286,7 +286,7 @@ exports.deleteUser = catchAsyncErrors(async (req, res, next) => {
   
     if (!user) {
       return next(
-        new ErrorHander(`User does not exist with Id: ${req.params.id}`, 400)
+        new ErrorHandler(`User does not exist with Id: ${req.params.id}`, 400)
       );
     }
   
