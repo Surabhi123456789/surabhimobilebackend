@@ -1,5 +1,5 @@
 const express = require("express")
-
+const cors = require('cors');
 const app = express();
 
 const errorMiddleware = require("./middleware/error")
@@ -11,6 +11,15 @@ const fileUpload = require("express-fileupload");
 const dotenv = require("dotenv");
 
 dotenv.config({path:"backend/config/config.env"});
+
+const corsOptions = {
+  origin: "https://surabhimobilefrontend.vercel.app", // allow your frontend domain
+  methods: ["GET", "POST", "PUT", "DELETE"],  
+   allowedHeaders: ["Content-Type", "Authorization"],         // allow desired HTTP methods
+  credentials: true                                    // allow cookies if used
+};
+
+app.use(cors(corsOptions));
 
 app.use(express.json());
 app.use(cookieParser()); 
