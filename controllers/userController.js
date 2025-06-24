@@ -40,47 +40,62 @@ exports.registerUser = catchAsyncErrors(async (req, res, next) => {
 
 // login user
 
-exports.loginUser = catchAsyncErrors(async(req,res,next)=>{
+exports.loginUser = catchAsyncErrors(async (req, res, next) => {
+    console.log('🔐 Login attempt:', {
+        email: req.body.email,
+        hasPassword: !!req.body.password,
+        origin: req.headers.origin,
+        userAgent: req.headers['user-agent']
+    });
 
-    const {email,password} = req.body
+    const { email, password } = req.body;
 
-    if(!email || !password)
-    {
-        return next(new ErrorHandler("please enter email and password  ",400))
+    // Validation
+    if (!email || !password) {
+        return next(new ErrorHandler("Please enter email and password", 400));
     }
 
-    const user = await User.findOne({email}).select("+password");
+    // Find user with password (since it's select: false in model)
+    const user = await User.findOne({ email }).select("+password");
 
-    if(!user)
-    {
-        return next(new ErrorHandler("invalid email or password",401))
+    if (!user) {
+        console.log('❌ User not found:', email);
+        return next(new ErrorHandler("Invalid email or password", 401));
     }
 
+    // Check password
     const isPasswordMatched = await user.comparePassword(password);
 
-    if(!isPasswordMatched)
-    {
-        return next(new ErrorHandler("invalid email or password",401))
+    if (!isPasswordMatched) {
+        console.log('❌ Password mismatch for:', email);
+        return next(new ErrorHandler("Invalid email or password", 401));
     }
-    sendToken(user,200,res)
 
-})
+    console.log('✅ Login successful for:', email);
+    
+    // Send token (this will set the cookie)
+    sendToken(user, 200, res);
+});
 
-// logout user 
-
-exports.logout = catchAsyncErrors(async(req,res,next)=>{
-
-    res.cookie("token",null,{
+// Enhanced logout function
+exports.logout = catchAsyncErrors(async (req, res, next) => {
+    console.log('🚪 Logout request received');
+    
+    res.cookie("token", null, {
         expires: new Date(Date.now()),
-        httpOnly: true
-    })
+        httpOnly: true,
+        secure: process.env.NODE_ENV === 'production',
+        sameSite: process.env.NODE_ENV === 'production' ? 'none' : 'lax',
+        path: '/',
+    });
+
+    console.log('✅ Logout successful - cookie cleared');
 
     res.status(200).json({
         success: true,
-        message: "logged out"
-    })
-})
-
+        message: "Logged out successfully"
+    });
+});
 // forgot password
 
 exports.forgotPassword = catchAsyncErrors(async(req,res,next)=>{
