@@ -8,7 +8,8 @@ const connectDatabase = require("./config/database")
 
 const corsOptions = {
   origin: "https://surabhimobilefrontend.vercel.app", // allow your frontend domain
-  methods: ["GET", "POST", "PUT", "DELETE"],           // allow desired HTTP methods
+  methods: ["GET", "POST", "PUT", "DELETE"],  
+   allowedHeaders: ["Content-Type", "Authorization"],         // allow desired HTTP methods
   credentials: true                                    // allow cookies if used
 };
 
